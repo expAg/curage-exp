@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Curage neuro-symbolique d’un réseau lexico-sémantique : données</title>
+<style>
+:root{
+  --bg:#ffffff;--ink:#1d1f22;--muted:#6a7078;--faint:#a3a8af;--line:#e6e8eb;--soft:#f4f5f7;
+  --accent:#2c5a85;--accent-soft:#e8f0f7;--ok:#2d7a4d;--ko:#a3392f;--warn:#8a6414;
+  --o-jdm:#3d434a;--o-sat:#2f7bbf;--o-fus:#c98a1b;
+  --t-don:#2c6fb0;--t-met:#7a4bb5;--t-res:#2d7a4d;--t-eva:#b0602a;
+  --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--grid:#eceeef;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#16181b;--ink:#e3e5e8;--muted:#9da3ab;--faint:#676d75;--line:#2b3035;--soft:#1f2327;
+  --accent:#8bb7e2;--accent-soft:#1f2e3c;--ok:#7cc79a;--ko:#e48a80;--warn:#d9b45e;
+  --o-jdm:#c5cad1;--o-sat:#5aa6ea;--o-fus:#e0a73d;
+  --t-don:#7fb3e6;--t-met:#b79ae6;--t-res:#7cc79a;--t-eva:#e6a26f;
+  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--grid:#25292d;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:18px 32px 0;border-bottom:1px solid var(--line)}
+h1{font-size:16px;margin:0 0 10px;font-weight:600}h1 .lien{font-weight:400;font-size:13px;color:var(--muted);margin-left:12px}
+nav{display:flex;gap:2px;flex-wrap:wrap}
+nav button,.sub button{border:0;background:none;font:inherit;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent}
+nav button{padding:7px 12px;font-size:13.5px}
+nav button.on,.sub button.on{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+main{padding:20px 32px 60px;max-width:1440px;margin:0 auto}
+.sub{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:0 0 16px}
+.sub button{padding:6px 10px;font-size:13px;margin-bottom:-1px}
+nav .pref{font-weight:600;margin-right:4px}
+nav button.on{border-bottom-color:var(--fam,var(--accent))}
+h2{font-size:15px;margin:0 0 8px;font-weight:600}
+h3{font-size:11.5px;margin:16px 0 5px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.stats{display:flex;gap:28px;flex-wrap:wrap;margin:0 0 18px}
+.stats div{font-size:12px;color:var(--muted)}.stats b{display:block;font-size:17px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:4px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--muted);background:var(--bg);position:sticky;top:0;z-index:1;font-size:11.5px}
+.n{text-align:right!important;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.cl{cursor:pointer}tr.cl:hover td{background:var(--soft)}tr.sel td{background:var(--accent-soft)}
+td.cl{cursor:pointer}td.cl:hover{background:var(--soft)}td.on{background:var(--accent-soft);font-weight:600}
+.wrap{overflow:auto;max-height:600px}
+.split{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.4fr);gap:28px;align-items:start}
+.split.deux{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media (max-width:900px){.split,.split.deux{grid-template-columns:1fr}}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 12px}
+select,input[type=search]{font:inherit;font-size:13px;padding:4px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink)}
+input[type=search]{min-width:200px}
+.pill{display:inline-block;padding:0 6px;border-radius:8px;font-size:11px;font-weight:600;white-space:nowrap;border:1px solid currentColor}
+.p-ok{color:var(--ok)}.p-ko{color:var(--ko)}.p-w{color:var(--warn)}.p-n{color:var(--faint)}
+.mono{font-family:var(--mono);font-size:12px}
+pre{font-family:var(--mono);font-size:12px;white-space:pre-wrap;background:var(--soft);border-radius:4px;padding:10px 12px;margin:4px 0;overflow:auto}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:2px 18px;font-size:13px}
+.kv>div:nth-child(odd){color:var(--muted)}
+.chips{line-height:1.95}
+.chips span{display:inline-block;border:1px solid var(--line);border-radius:3px;padding:0 6px;margin:0 4px 0 0;font-size:12px;font-family:var(--mono)}
+.chips.obj span{font-family:inherit}
+.chips span.t{background:var(--accent-soft);border-color:var(--accent)}
+.sec{margin-top:16px}
+details{margin:4px 0}summary{cursor:pointer;color:var(--muted);font-size:12px}
+.mut{color:var(--muted);font-size:12px}
+.empty{color:var(--faint)}
+.leg{display:flex;gap:14px;font-size:12px;color:var(--muted);margin:0 0 8px}
+.leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+.mx{overflow:auto;max-height:720px;display:flex;align-items:flex-start;border:1px solid var(--line)}
+#tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:4px 7px;border-radius:3px;display:none;z-index:10;max-width:420px}
+.t3 th,.t3 td{text-align:right}.t3 th:first-child,.t3 td:first-child{text-align:left}
+.t3 tr.fin td{border-top:2px solid var(--line);font-weight:600}
+.figs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 36px;max-width:1240px}
+@media (max-width:900px){.figs{grid-template-columns:1fr}}
+.fig h2{font-size:13.5px;font-weight:600;margin:0 0 2px}.fig .src{font-size:12px;color:var(--muted);margin:0 0 6px}
+.fig svg{width:100%;height:auto;display:block}.fig svg text{font:11px system-ui,sans-serif;fill:var(--muted)}
+.fig .lg{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:2px 0 4px}.fig .lg svg{width:22px;height:10px;display:inline-block;vertical-align:middle;margin-right:5px}
+hr.sep{border:0;border-top:1px solid var(--line);margin:28px 0 0}
+.tree .src{cursor:pointer;color:var(--accent);border-bottom:0}.tree .src.on{font-weight:600}
+.code-ouvert{margin:4px 0 10px 32px;white-space:normal}.code-ouvert .attendu{font-family:inherit;font-size:12.5px;margin:0 0 4px}.code-ouvert pre{max-height:380px;white-space:pre}
+.tree div{white-space:pre;line-height:1.7}.tree .fi{cursor:help;border-bottom:1px dotted var(--faint)}
+.card{border:1px solid var(--line);border-radius:6px;margin:0 0 10px;background:var(--bg)}
+.card>summary{padding:8px 12px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);list-style-position:inside}
+.card[open]>summary{border-bottom:1px solid var(--line)}
+.card>.in{padding:6px 12px 10px}.card>.in>h3:first-child{margin-top:4px}
+.msg{border-left:3px solid var(--line);padding:2px 0 2px 14px;margin:0 0 18px}
+.msg.env{border-left-color:var(--accent)}.msg.rep{border-left-color:var(--ok)}.msg.rel{border-left-color:var(--warn)}
+.msg>.who{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:4px}
+.msg pre{max-height:420px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Curage neuro-symbolique d’un réseau lexico-sémantique : données<a class="lien" href="code.html">implémentation</a></h1>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+<div id="tip"></div>
+<script>
+"use strict";
+const D = window.DONNEES || (window.DONNEES = {});
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt = (x, n=2) => x == null ? '—' : Number(x).toLocaleString('fr-FR', {minimumFractionDigits:n, maximumFractionDigits:n});
+const int = x => x == null ? '—' : Number(x).toLocaleString('fr-FR').replace('-', '−');
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+const CHARGE = Date.now();
+const FICH = {};
+function load(name){
+  return new Promise((res, rej) => {
+    if (D[name]) return res(D[name]);
+    const s = document.createElement('script');
+    s.src = 'page/' + name + '.js?v=' + CHARGE;   // jamais une ancienne copie en cache
+    s.onload = () => res(D[name]); s.onerror = () => rej(new Error('fichier manquant : ' + s.src));
+    document.head.appendChild(s);
+  });
+}
+const STATUT = {retenu:['retenu','p-ok'], battu:['inférieur à la version amendée','p-n'], juge:['écarté','p-ko'], ecarte:['écarté','p-ko'],
+  fusionne:['fusionné','p-w'], rattache:['rattaché','p-w'], sans_nom:['sans nom','p-ko'], nom_pris:['nom pris','p-ko']};
+const STATUT_AIDE = {retenu:'retenu par le Juge', battu:'une autre version du CF est mieux notée', juge:'note du Juge sous le seuil de rétention',
+  ecarte:'note du Juge sous le seuil de rétention', fusionne:'réuni avec un autre terme retenu', rattache:'rattaché à un terme existant de JDM',
+  sans_nom:'aucun nom valide', nom_pris:'nom déjà utilisé'};
+const pill = (st, e, egal) => { const s = (st === 'battu' && egal) ? [e.v != null ? 'à égalité, version originale retenue' : 'à égalité, version amendée retenue','p-n'] : (st === 'battu' && e && e.v != null) ? ['inférieur à la version originale','p-n'] : (STATUT[st] || [st, 'p-n']); return `<span class="pill ${s[1]}" title="${esc(STATUT_AIDE[st]||'')}">${esc(s[0])}</span>`; };
+const issue = cf => { const ss = new Set(cf.decisions.map(e => e.statut)); for (const s of ['retenu','fusionne','rattache','juge','nom_pris','sans_nom']) if (ss.has(s)) return s; return [...ss][0] || ''; };
+const version = v => v == null ? 'version originale' : 'version amendée';
+const CTL = {'ecarte : variante vide':'variante vide', "ecarte : retrait d'un terme cree":'retrait d\'un terme créé',
+  'ecarte : operation sans effet':'opération sans effet', "ecarte : ajout du terme initial":'ajout du terme initial',
+  'signale : annotation hors intension':'attribut hors intension'};
+const motif = o => { if (o.coherence === 'generale') return 'cohérence générale';
+  const l = o.objets_qui_n_ont_pas_l_attribut || o.attributs_que_l_objet_n_a_pas; return l ? 'erreur' + (l.length ? ' : ' + l.join(', ') : '') : ''; };
+const REL = ['r_isa','r_carac','r_has_part','r_lieu>origine','r_object>mater','r_domain'];
+const ORIG = {'relation de JDM':'--o-jdm', 'saturation':'--o-sat', 'fusion par synonymie':'--o-fus', 'autre fusion':'--o-fus', 'héritée':'--o-jdm', 'terme créé':'--s1', 'correction ajoutée':'--s3', 'renommage':'--o-fus', 'fusion de termes':'--o-fus', 'redevenue discriminante':'--t-met'};
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const chips = (l, cls='') => `<div class="chips ${cls}">${l.map(x=>`<span>${esc(x)}</span>`).join('')||'<span class="empty">—</span>'}</div>`;
+const legend = (c) => (c && c.bilan) ? `<div class="leg">${Object.keys(c.bilan).map(k => `<span><i style="background:var(${ORIG[k]})"></i>${esc(k)}</span>`).join('')}</div>` : `<div class="leg"><span><i style="background:var(--o-jdm)"></i>JDM</span><span><i style="background:var(--o-sat)"></i>saturation</span><span><i style="background:var(--o-fus)"></i>fusion</span></div>`;
+function table(head, rows, num=[], opt={}){
+  const MAX = opt.max || 2000;
+  return `<div class="wrap" style="max-height:${opt.h||560}px"><table><thead><tr>${head.map((h,i)=>`<th class="${num[i]?'n':''}">${esc(h)}</th>`).join('')}</tr></thead><tbody>
+    ${rows.slice(0,MAX).map(r=>'<tr>'+r.map((v,i)=>`<td class="${num[i]?'n':''}">${opt.html?v:esc(v)}</td>`).join('')+'</tr>').join('')}</tbody></table></div>`
+    + (opt.compte === false ? '' : `<div class="mut">${int(rows.length)} ligne${rows.length>1?'s':''}</div>`);
+}
+function split(el, {cols, rows, num=[], sel, onSel, detail, max=Infinity}){
+  el.innerHTML = `<div class="split"><div><div class="bar"><input type="search" placeholder="Filtrer"></div><div class="wrap" style="max-height:640px"><table><thead><tr>${cols.map((c,i)=>`<th class="${num[i]?'n':''}">${esc(c)}</th>`).join('')}</tr></thead><tbody></tbody></table></div></div><div class="det"></div></div>`;
+  const tb = el.querySelector('tbody'), q = el.querySelector('input'), det = el.querySelector('.det');
+  const draw = () => { const f = (q.value||'').toLowerCase();
+    const vis = rows.filter(r => !f || r.texte.toLowerCase().includes(f));
+    tb.innerHTML = vis.slice(0, max).map(r => `<tr class="cl ${r.k===sel?'sel':''}" data-k="${esc(r.k)}">${r.c.map((v,i)=>`<td class="${num[i]?'n':''}">${v}</td>`).join('')}</tr>`).join('')
+      + (vis.length > max ? `<tr><td colspan="${cols.length}" class="mut">${int(max)} premières lignes sur ${int(vis.length)}, filtrer pour voir les autres</td></tr>` : '');
+    tb.querySelectorAll('tr').forEach(tr => tr.onclick = () => { sel = tr.dataset.k; onSel(sel); draw(); det.innerHTML = detail(sel); ajuste(); }); };
+  // la liste prend la hauteur du panneau de droite (au moins celle de l'écran)
+  const lst = el.querySelector('.wrap'), ajuste = () => { lst.style.maxHeight = Math.max(window.innerHeight - lst.getBoundingClientRect().top - 24, det.offsetHeight - 40, 360) + 'px'; };
+  det.addEventListener('toggle', ajuste, true);
+  q.oninput = draw; draw(); det.innerHTML = sel != null ? detail(sel) : ''; requestAnimationFrame(ajuste);
+}
+
+// ---------------------------------------------------------------- navigation
+const TABS = [['presentation','Présentation'],['sousgraphe','Données : sous-graphe'],['contexte','Données : contexte formel'],['cfs','Méthode FCA : CFs curés / itération'],['fil','Méthode LLM : fil des agents'],['termes','Résultats : termes retenus'],['evaluation','Évaluation : jugement humain'],['figures','Évaluation : figures']];
+let current = 'presentation';
+const FAM = {'Données':'--t-don', 'Méthode FCA':'--t-met', 'Méthode LLM':'--t-met', 'Résultats':'--t-res', 'Évaluation':'--t-eva'};
+function nav(){ $('#nav').innerHTML = TABS.map(([k,l]) => { const [p, r] = l.includes(' : ') ? l.split(' : ') : [null, l], f = FAM[p];
+    return `<button data-k="${k}" class="${k===current?'on':''}" style="${f?`--fam:var(${f})`:''}">${p ? `<span class="pref" style="color:var(${f})">${p} :</span>` : ''}${r}</button>`; }).join('');
+  $('#nav').querySelectorAll('button').forEach(b => b.onclick = () => show(b.dataset.k)); }
+async function show(k){ current = k; nav(); try { localStorage.setItem('onglet', k); } catch(e) {}
+  try { await VIEWS[k](); } catch(e) { console.error(e); $('#main').innerHTML = `<p>${esc(e.message)}</p>`; } }
+const VIEWS = {};
+
+VIEWS.presentation = async () => {
+  const r = await load('resume');
+  $('#main').innerHTML = `<div class="split deux"><div>
+   <table><tbody>
+     <tr><td class="mut">Terme initial</td><td>${esc(r.terme_initial)}</td></tr>
+     <tr><td class="mut">Modèle des agents</td><td>${esc(r.modele)}</td></tr>
+     <tr><td class="mut">Agents</td><td>${r.ordre_agents.map(cap).join(' → ')}</td></tr>
+     <tr><td class="mut">CFs par itération</td><td>${r.lot}</td></tr>
+     <tr><td class="mut">Rétention</td><td>meilleure version d'un CF, si la note du juge dépasse ${fmt(r.retention.valeur,1)}</td></tr>
+     <tr><td class="mut">Termes retenus</td><td>${r.termes_total}</td></tr>
+   </tbody></table>
+   <h3>Itérations</h3>
+   <table><thead><tr><th class="n">Itération</th><th class="n">Objets</th><th class="n">CFs émergents</th><th class="n">CFs soumis</th><th class="n">Termes retenus</th></tr></thead><tbody>
+   ${r.iterations.map(it => `<tr><td class="n">${it.k}</td><td class="n">${int(it.contexte.objets)}</td><td class="n">${int(it.contexte.emergents)}</td><td class="n">100</td><td class="n">${it.retenus}</td></tr>`).join('')}</tbody></table>
+  </div><div><h3 style="margin-top:0">Données</h3><div class="tree">${arbre(FICHIERS)}</div></div></div>`;
+};
+const FICHIERS = [
+  ['donnees/', 'les données de l\'expérience, chacune une seule fois', [
+    ['parametres_experience.json', 'terme initial, modèle, taille des lots, règle de rétention, effectifs par itération'],
+    ['sous_graphe_jdm/', 'Données : sous-graphe', [
+      ['sous_graphe_jdm.json', 'les 4 018 relations lues dans JDM pour les 79 objets, et le devenir de chacune au pré-traitement'],
+    ]],
+    ['contexte_formel/', 'Données : contexte formel', [
+      ['contexte_formel.json', 'les cinq contextes formels, un par itération : objets, attributs, incidences et leur provenance ; incidences disparues d\'une itération à la suivante'],
+    ]],
+    ['methode_fca/', 'Méthode FCA', [
+      ['concepts_formels.json', 'pour chaque itération : comptes des concepts formels, CFs lexicalisés, tous les CFs émergents avec leur κ et les 100 CFs soumis aux agents'],
+    ]],
+    ['methode_llm/', 'Méthode LLM', [
+      ['echanges_agents_iteration_1.json … echanges_agents_iteration_5.json', 'prompts envoyés, réponses, relances, par agent'],
+      ['controle_iteration_1.json … controle_iteration_5.json', 'contrôle, décisions de rétention, corrections, par CF'],
+      ['recurage_termes_obsoletes.json', 'recurage, après la dernière itération, des termes rendus obsolètes par des corrections ultérieures : réponses des agents et décisions'],
+      ['prompt_juge_final.json', 'prompt du juge final : notation commune des 349 termes retenus'],
+    ]],
+    ['resultats/', 'Résultats', [
+      ['termes_retenus.json', 'les 349 termes retenus, avec la note du juge à leur itération et la note du juge final'],
+    ]],
+    ['evaluation/', 'Évaluation', [
+      ['fiche_annotation_anonymisee.xlsx', 'jugements humains : la liste des termes et une feuille par annotateur'],
+      ['precisions_humains.json', 'protocole d\'annotation et précisions de l\'article'],
+    ]],
+  ]],
+];
+const arbre = (L, pre='', chemin='') => L.map(([n, d, sub, attendu], i) => { const der = i === L.length - 1, p = chemin + n;
+  const nom = attendu ? `<span class="fi src" data-src="${esc(p)}" data-attendu="${esc(attendu)}" title="${esc(d)}">${esc(n)}</span><span class="mut"> · ${esc(d)}</span>`
+    : `<span title="${esc(d)}" class="fi">${esc(n)}</span>`;
+  return `<div class="mono"><span class="mut">${pre}${der ? '└─ ' : '├─ '}</span>${nom}</div>` + (attendu ? `<div class="code-ouvert" data-pour="${esc(p)}" hidden></div>` : '')
+    + (sub ? arbre(sub, pre + (der ? '   ' : '│  '), chemin + (n === 'methode/' ? n : '')) : ''); }).join('');
+// ---------------------------------------------------------------- sous-graphe
+let sgSel = null;
+VIEWS.sousgraphe = async () => {
+  const G = await load('sous_graphe'), R = ['r_isa','r_carac','r_has_part','r_lieu>origine','r_object>mater','r_domain'];
+  const dev = x => x.devenir.startsWith('conservée') ? 'conservée' : x.devenir.startsWith('fusionnée') ? 'fusionnée' : 'retirée';
+  const par = {}; G.relations.forEach(x => (par[x.objet] ||= []).push(x));
+  const n = (t, d) => G.relations.filter(x => x.type === t && (!d || dev(x) === d)).length;
+  $('#main').innerHTML = `<div class="stats"><div>Terme initial<b>${esc(G.terme_initial)}</b></div><div>Objets (${esc(G.relation_objets)})<b>${G.objets.length}</b></div><div>Relations lues<b>${int(G.relations.length)}</b></div><div>Poids minimal<b>${G.poids_minimal}</b></div></div>
+    <table class="t3" style="max-width:980px;margin-bottom:18px"><thead><tr><th>relations lues</th>${R.map(r=>`<th class="mono">${esc(r)}</th>`).join('')}<th>total</th></tr></thead><tbody>
+    ${['conservée','fusionnée','retirée',''].map(d => `<tr class="${d?'':'fin'}"><td>${d || 'total'}</td>${R.map(r=>`<td class="n">${int(n(r, d))}</td>`).join('')}<td class="n">${int(R.reduce((s,r)=>s+n(r,d),0))}</td></tr>`).join('')}
+    </tbody></table><div id="sgv"></div>`;
+  const rows = G.objets.map(o => ({k:o, texte:o, c:[esc(o), (par[o]||[]).length]})).sort((a,b)=>a.texte.localeCompare(b.texte,'fr'));
+  split($('#sgv'), {cols:['Objet','Relations lues'], num:[0,1], rows, sel:sgSel, onSel:k=>sgSel=k, detail:k=>
+    `<h2>${esc(k)}</h2>` + table(['Relation lue','Devenir'], (par[k]||[]).slice().sort((a,b)=>a.relation.localeCompare(b.relation,'fr')).map(x=>[x.relation, x.devenir]), [], {h:620})});
+};
+
+// ---------------------------------------------------------------- contexte formel
+let ctxSub = 'pre', ctxCell = 'saturees:t', selObj = null, selAttr = null, selLex = null;
+let SG = null, ctxIt = 1;
+VIEWS.contexte = async () => {
+  SG = await load('sous_graphe');
+  const c = await load(ctxIt === 1 ? 'contexte' : 'contexte_' + ctxIt), K = c.concepts;
+  const subs = [[ctxIt === 1 ? 'pre' : 'maj', ctxIt === 1 ? 'Pré-traitements' : 'Évolution depuis l\'itération ' + (ctxIt - 1)],['mx','Matrice d\'incidence'],['obj','Objets'],['att','Attributs'],['lex','CFs lexicalisés']];
+  if (ctxSub === 'pre' && ctxIt > 1) ctxSub = 'maj';
+  if (ctxSub === 'maj' && ctxIt === 1) ctxSub = 'pre';
+  $('#main').innerHTML = `<div class="bar"><select id="ctxit">${[1,2,3,4,5].map(k=>`<option value="${k}" ${k===ctxIt?'selected':''}>Itération ${k}</option>`).join('')}</select></div><div class="stats"><div>Objets<b>${int(c.objets.length)}</b></div><div>Attributs<b>${int(c.attributs.length)}</b></div><div>Incidences<b>${int(c.incidences.length)}</b></div><div>Concepts formels<b>${int(K.total)}</b></div><div>CFs émergents<b>${int(K.emergents)}</b></div><div>CFs lexicalisés<b>${int(K.lexicalises)}</b></div></div>
+    <div class="sub" id="cs">${subs.map(([k,l])=>`<button data-k="${k}" class="${k===ctxSub?'on':''}">${l}</button>`).join('')}</div><div id="cv"></div>`;
+  $('#cs').querySelectorAll('button').forEach(b => b.onclick = () => { ctxSub = b.dataset.k; VIEWS.contexte(); });
+  $('#ctxit').onchange = e => { ctxIt = +e.target.value; selObj = selAttr = selLex = null; VIEWS.contexte(); };
+  ({pre:vPre, maj:vMaj, mx:vMx, obj:vObj, att:vAtt, lex:vLex}[ctxSub] || vPre)(c, $('#cv'));
+};
+let majCause = null;
+function vMaj(c, el){
+  const causes = Object.entries(c.bilan), dis = {};
+  c.disparues.forEach(([o,a,m]) => { const k = m.split(',')[0]; dis[k] = (dis[k]||0) + 1; });
+  if (!majCause || !(majCause in c.bilan || majCause === 'disparues')) majCause = causes.find(([k]) => k !== 'héritée')?.[0] || 'héritée';
+  el.innerHTML = `<div class="split"><div><table><thead><tr><th>Incidences du contexte</th><th class="n">Nombre</th></tr></thead><tbody id="mj">
+      ${causes.map(([k,n]) => `<tr class="cl ${k===majCause?'sel':''}" data-k="${esc(k)}"><td><i style="display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;background:var(${ORIG[k]})"></i>${esc(k)}</td><td class="n">${int(n)}</td></tr>`).join('')}
+      <tr class="cl ${majCause==='disparues'?'sel':''}" data-k="disparues"><td>disparues depuis l'itération précédente</td><td class="n">${int(c.disparues.length)}</td></tr>
+    </tbody></table>${Object.keys(dis).length ? `<div class="mut" style="margin-top:6px">${Object.entries(dis).map(([k,n])=>`${esc(k)} : ${n}`).join(' · ')}</div>` : ''}</div><div id="mjd"></div></div>`;
+  const det = () => { $('#mjd').innerHTML = majCause === 'disparues'
+      ? `<h2>Incidences disparues</h2>` + table(['Objet','Attribut','Cause'], c.disparues.map(([o,a,m]) => [o, a, m]), [], {h:640})
+      : `<h2>${esc(majCause)}</h2>` + table(['Objet','Attribut','Détail'], c.incidences.filter(x => x[2] === majCause).map(([o,a,s,p]) => [c.objets[o], c.attributs[a].relation + ':' + c.attributs[a].cible, p || '']), [], {h:640}); };
+  $('#mj').querySelectorAll('tr').forEach(tr => tr.onclick = () => { majCause = tr.dataset.k; $('#mj').querySelectorAll('tr').forEach(x => x.classList.toggle('sel', x === tr)); det(); });
+  det();
+}
+const relOf = a => String(a).split(':')[0];
+function vPre(c, el){
+  const P = c.pretraitements, R = P.relations, X = P.detail, tot = a => (a||[]).reduce((x,y)=>x+y,0);
+  const AIDE = {avant:'relations lues dans JDM avant pré-traitement', saturees:'incidences héritées le long des chaînes taxonomiques ; une incidence saturée puis fusionnée compte avec les fusions',
+    fusions:'incidences fusionnées moins relations d\'origine remplacées ; entre parenthèses, attributs disparus par fusion', non_discriminantes:'r_isa vers le terme initial et ses génériques, incidences écartées par une annotation, attributs portés par plus de la moitié des objets', apres:'contexte formel final'};
+  const cell = (k, i, o) => { const v = i==='t' ? tot(o.incidences) : o.incidences[i], a = o.attributs ? (i==='t' ? tot(o.attributs) : o.attributs[i]) : 0;
+    if (!v && !a) return '<td class="n">–</td>';
+    return `<td class="n cl ${ctxCell===k+':'+i?'on':''}" data-c="${k}:${i}">${int(v)}${a?` <span class="mut">(${int(a)})</span>`:''}</td>`; };
+  const ligne = (k, lib, cls='') => `<tr class="${cls}"><td title="${esc(AIDE[k])}">${lib}</td>${R.map((_,i)=>cell(k,i,P[k])).join('')}${cell(k,'t',P[k])}</tr>`;
+  el.innerHTML = `<table class="t3" style="max-width:980px"><thead><tr><th>incidences (attributs)</th>${R.map(r=>`<th class="mono">${esc(r)}</th>`).join('')}<th>total</th></tr></thead><tbody>
+    ${ligne('avant','relations lues dans JDM')}${ligne('saturees','saturées')}${ligne('fusions','fusions (bilan)')}${ligne('non_discriminantes','non discriminantes')}${ligne('apres','contexte final','fin')}
+    </tbody></table><div class="sec" id="pd"></div>`;
+  el.querySelectorAll('td.cl').forEach(td => td.onclick = () => { ctxCell = td.dataset.c; vPre(c, el); });
+  const [k, i] = ctxCell.split(':'), rel = i === 't' ? null : R[+i], f = l => rel ? l.filter(x => relOf(x.attribut || x.relation_origine) === rel) : l;
+  const titre = t => `<h2>${t}${rel?` · <span class="mono">${esc(rel)}</span>`:''}</h2>`;
+  let h = '';
+  if (k === 'avant') h = titre('Relations lues dans JDM') + table(['Objet','Relation lue','Devenir'], (SG ? SG.relations : []).filter(x => !rel || x.type === rel).map(x => [x.objet, x.relation, x.devenir]), [], {h:560});
+  if (k === 'saturees') h = titre('Incidences saturées') + table(['Objet','Attribut','Chemin lu dans JDM','Poids'], f(X.saturees).map(x=>[x.objet, x.attribut, x.temoins.map(t=>t.lu).join(' ; '), x.temoins.map(t=>t.poids).join(' ; ')]), [0,0,0,1]);
+  if (k === 'fusions') { const AB = rel ? X.attributs_absorbes.filter(a=>relOf(a)===rel) : X.attributs_absorbes;
+    h = titre('Fusions') + `<h3>Incidences fusionnées</h3>` + table(['Objet','Attribut','Fusion'], f(X.fusions_cellules).map(x=>[x.objet,x.attribut,x.motif]), [], {h:260})
+      + `<h3>Relations d'origine remplacées · synonymie</h3>` + table(['Objet','Relation d\'origine','Devient','Lien JDM','Poids'], f(X.fusions_origines_synonymie).map(x=>[x.objet,x.relation_origine,x.devient,x.arc,x.poids]), [0,0,0,0,1], {h:260})
+      + `<h3>Relations d'origine remplacées · autres fusions</h3>` + table(['Objet','Relation d\'origine · relation JDM','Devient','Fusion'], f(X.fusions_autres).map(x=>[x.objet,x.temoins.join(' ; '),x.attribut,x.motif]), [], {h:260})
+      + `<h3>Attributs disparus par fusion · ${AB.length}</h3>` + chips(AB); }
+  if (k === 'non_discriminantes') { const AN = f(X.annotations), MA = f(X.majoritaires), AR = rel ? X.attributs_annotes_retires.filter(a=>relOf(a)===rel) : X.attributs_annotes_retires;
+    h = titre('Incidences non discriminantes')
+      + ((!rel || rel==='r_isa') ? `<h3>r_isa vers le terme initial et ses hyperonymes · ${X.isa_terme_initial.incidences} incidences, ${X.isa_terme_initial.attributs} attributs</h3>` + table(['Objet','Attribut'], X.isa_terme_initial.liste.map(x=>[x.objet,x.attribut]), [], {h:260}) : '')
+      + (MA.length ? `<h3>Attributs portés par plus de la moitié des objets</h3>` + table(['Attribut','Objets'], MA.map(x=>[x.attribut,x.support]), [0,1], {h:220}) : '')
+      + (AN.length ? `<h3>Incidences écartées par une annotation</h3>` + table(['Objet','Attribut','Annotation'], AN.map(x=>[x.objet,x.attribut,x.annotation]), [], {h:280}) + `<h3>Attributs disparus · ${AR.length}</h3>` + chips(AR) : ''); }
+  if (k === 'apres') h = titre('Contexte final') + legend() + table(['Objet','Attribut','Origine','Provenance'], c.incidences.filter(([o,a]) => !rel || c.attributs[a].relation === rel).map(([o,a,s,p])=>[c.objets[o], c.attributs[a].relation+':'+c.attributs[a].cible, s, p||'']));
+  $('#pd').innerHTML = h;
+}
+function vMx(c, el){
+  const nO = c.objets.length, nA = c.attributs.length, cw = 4, ch = 13, lw = 180, th = 24, H = th + nO*ch, W = nA*cw;
+  const ordre = c.objets.map((o,i)=>i).sort((a,b)=>c.objets[a].localeCompare(c.objets[b],'fr')), rang = []; ordre.forEach((o,r)=>rang[o]=r);
+  el.innerHTML = legend(c) + `<div class="mx"><canvas id="ml" style="position:sticky;left:0;z-index:2;cursor:pointer"></canvas><canvas id="mc"></canvas></div>`;
+  const dpr = window.devicePixelRatio || 1;
+  const prep = (cv, w) => { cv.width = Math.round(w*dpr); cv.height = Math.round(H*dpr); cv.style.width = w+'px'; cv.style.height = H+'px';
+    const g = cv.getContext('2d'); g.scale(dpr,dpr); g.fillStyle = css('--bg'); g.fillRect(0,0,w,H); g.textBaseline = 'middle'; return g; };
+  const gl = prep($('#ml'), lw); gl.font = '11.5px system-ui'; gl.fillStyle = css('--ink');
+  ordre.forEach((o,r) => gl.fillText(c.objets[o], 6, th + r*ch + ch/2, lw-12)); gl.fillStyle = css('--line'); gl.fillRect(lw-1,0,1,H);
+  const cv = $('#mc'), g = prep(cv, W); g.font = '11px system-ui';
+  let deb = 0, alt = 0;
+  for (let j = 1; j <= nA; j++) if (j === nA || c.attributs[j].relation !== c.attributs[deb].relation) {
+    if (alt++ % 2 === 0) { g.fillStyle = css('--soft'); g.fillRect(deb*cw, th, (j-deb)*cw, nO*ch); }
+    g.fillStyle = css('--muted'); g.fillText(c.attributs[deb].relation, deb*cw+4, th/2); deb = j; }
+  const col = {}; for (const k in ORIG) col[k] = css(ORIG[k]);
+  c.incidences.forEach(([o,a,s]) => { g.fillStyle = col[s]; g.fillRect(a*cw, th+rang[o]*ch+2, cw-1, ch-4); });
+  const orig = new Map(c.incidences.map(([o,a,s,p])=>[o+'|'+a, s + (p ? ' · ' + p : '')])), tip = $('#tip');
+  cv.onmousemove = e => { const b = cv.getBoundingClientRect(), r = Math.floor((e.clientY-b.top-th)/ch), j = Math.floor((e.clientX-b.left)/cw);
+    if (r<0||r>=nO||j<0||j>=nA) { tip.style.display='none'; return; }
+    const o = ordre[r], A = c.attributs[j], k = o+'|'+j;
+    tip.innerHTML = `${esc(c.objets[o])} · <span class="mono">${esc(A.relation+':'+A.cible)}</span>${orig.has(k)?'<br>'+esc(orig.get(k)).replace(/ ; /g,'<br>'):''}`;
+    tip.style.display='block'; tip.style.left=(e.clientX+12)+'px'; tip.style.top=(e.clientY+12)+'px'; };
+  cv.onmouseleave = () => tip.style.display='none';
+  const ouvrir = e => { const r = Math.floor((e.clientY-e.target.getBoundingClientRect().top-th)/ch); if (r>=0&&r<nO) { tip.style.display='none'; selObj = String(ordre[r]); ctxSub='obj'; VIEWS.contexte(); } };
+  cv.onclick = ouvrir; $('#ml').onclick = ouvrir;
+}
+function vObj(c, el){
+  const par = c.objets.map(() => []); c.incidences.forEach(([o,a,s,p]) => par[o].push([a,s,p]));
+  const rows = c.objets.map((o,i)=>({k:String(i), texte:o, c:[esc(o), par[i].length]})).sort((a,b)=>a.texte.localeCompare(b.texte,'fr'));
+  split(el, {cols:['Objet','Incidences'], num:[0,1], rows, sel:selObj, onSel:k=>selObj=k, detail:k=>{
+    const o = +k, G = {}; par[o].forEach(([a,s,p]) => (G[c.attributs[a].relation] ||= []).push([c.attributs[a].cible, s, p]));
+    return `<h2>${esc(c.objets[o])}</h2>${legend(c)}` + (REL.filter(r=>G[r]).map(r=>`<h3 class="mono" style="text-transform:none">${esc(r)} · ${G[r].length}</h3><div class="chips">${G[r].sort((x,y)=>x[0].localeCompare(y[0],'fr')).map(([t,s,p])=>`<span style="border-left:3px solid var(${ORIG[s]})" title="${esc(s + (p ? '\n' + p.replace(/ ; /g, '\n') : ''))}">${esc(t)}</span>`).join('')}</div>`).join('') || '<p class="empty">aucune incidence</p>'); }});
+}
+function vAtt(c, el){
+  const por = c.attributs.map(() => []); c.incidences.forEach(([o,a]) => por[a].push(c.objets[o]));
+  const rows = c.attributs.map((a,i)=>({k:String(i), texte:a.relation+':'+a.cible, c:[`<span class="mono">${esc(a.relation)}</span>`, esc(a.cible), por[i].length]}));
+  split(el, {cols:['Relation','Cible','Objets'], num:[0,0,1], rows, sel:selAttr, onSel:k=>selAttr=k, detail:k=>{ const a = c.attributs[+k];
+    return `<h2 class="mono">${esc(a.relation+':'+a.cible)}</h2>` + chips(por[+k].sort((x,y)=>x.localeCompare(y,'fr')),'obj'); }});
+}
+function vLex(c, el){
+  const L = c.concepts.lexicalises_detail;
+  const rows = L.map((l,i)=>({k:String(i), texte:l.r_isa.join(' ')+' '+l.extension.join(' '), c:[esc(l.r_isa.map(x=>x.replace(/^r_isa:/,'')).join(', ')), l.extension.length, l.intension.length]})).sort((a,b)=>b.c[1]-a.c[1]);
+  split(el, {cols:['Lexicalisé par','|X|','|Y|'], num:[0,1,1], rows, sel:selLex, onSel:k=>selLex=k, detail:k=>{ const l = L[+k];
+    return `<h2>${esc(l.r_isa.join(', '))}</h2><h3>Extension X · ${l.extension.length}</h3>${chips(l.extension,'obj')}<h3>Intension Y · ${l.intension.length}</h3>${chips(l.intension)}`; }});
+}
+
+// ---------------------------------------------------------------- CFs à curer
+let cfIt = 1, cfSel = null, cfEm = false, emSel = null;
+function ctlEvents(cf){
+  const C = cf.controle, ev = [];
+  for (const [ag, list] of Object.entries(cf.agents)) list.forEach(t => (t.relances||[]).forEach(r => ev.push(['relance', ag, r.consigne, r.reponse])));
+  for (const [ag, v] of Object.entries(C.propositions_ecartees||{})) for (const [m, n] of Object.entries(v)) ev.push(['écartée', ag, (CTL[m]||m) + (n>1?` (${n})`:'')]);
+  (C.operations_sans_effet||[]).forEach(o => ev.push(['sans effet', 'amendeur', `${o.action} ${o.valeur} : ${o.probleme}`]));
+  if (C.amendement === 'refus') ev.push(['refus', 'amendeur', C.relance_sans_effet?.justification || '']);
+  return ev;
+}
+const cfChoix = () => `<select id="cfit"><optgroup label="CFs émergents">${[1,2,3,4,5].map(k=>`<option value="e${k}" ${cfEm&&k===cfIt?'selected':''}>CFs émergents à l'itération ${k}</option>`).join('')}</optgroup>`
+  + `<optgroup label="CFs sélectionnés">${[1,2,3,4,5].map(k=>`<option value="s${k}" ${!cfEm&&k===cfIt?'selected':''}>Sélectionnés à l'itération ${k}</option>`).join('')}</optgroup></select>`;
+const cfChange = () => $('#cfit').onchange = e => { cfEm = e.target.value[0] === 'e'; cfIt = +e.target.value.slice(1); cfSel = emSel = null; VIEWS.cfs(); };
+async function vEmergents(){
+  const E = await load('emergents_' + cfIt), c = await load(cfIt === 1 ? 'contexte' : 'contexte_' + cfIt);
+  const nomA = a => c.attributs[a].relation + ':' + c.attributs[a].cible;
+  $('#main').innerHTML = `<div class="bar">${cfChoix()}<span class="mut">${int(E.length)} CFs émergents, par κ décroissant</span></div><div id="cv"></div>`;
+  cfChange();
+  const rows = E.map(([x, y, k], i) => ({k:String(i), texte:x.map(o=>c.objets[o]).join(' ')+' '+y.map(nomA).join(' '),
+    c:[i + 1, fmt(k, 4), x.length, y.length]}));
+  split($('#cv'), {cols:['Rang','κ','|X|','|Y|'], num:[1,1,1,1], rows, sel:emSel, onSel:k=>emSel=k, max:500, detail:k=>{ const [x, y, kap] = E[+k];
+    return `<h2>CF émergent ${+k + 1} · κ ${fmt(kap, 4)}</h2>` + carte(`Concept formel · |X| ${x.length} · |Y| ${y.length}`,
+      `<h3>Extension X · ${x.length}</h3>${chips(x.map(o=>c.objets[o]),'obj')}<h3>Intension Y · ${y.length}</h3>${chips(y.map(nomA))}`, true, '--t-met'); }});
+}
+VIEWS.cfs = async () => {
+  if (cfEm) return vEmergents();
+  const it = await load('iteration_' + cfIt);
+  TERMES = await load('termes');
+  $('#main').innerHTML = `<div class="bar">${cfChoix()}
+    <span class="mut">${int(it.contexte.emergents)} CFs émergents · 100 soumis · ${it.retenus} termes retenus · ● intervention du contrôle</span></div><div id="cv"></div>`;
+  cfChange();
+  const rows = it.cfs.map(cf => ({k:cf.id, texte:cf.extension.join(' ')+' '+cf.intension.join(' ')+' '+(cf.terme_retenu?.nom||''),
+    c:[cf.rang, cf.extension.length, cf.intension.length, pill(issue(cf)), esc(cf.terme_retenu?.nom||''), ctlEvents(cf).length ? '<span class="mut">●</span>' : '']}));
+  if (!it.cfs.some(c => c.id === cfSel)) cfSel = null;
+  split($('#cv'), {cols:['N°','|X|','|Y|','Issue','Terme retenu',''], num:[1,1,1,0,0,0], rows, sel:cfSel, onSel:k=>cfSel=k, detail:k=>cfDetail(it.cfs.find(c=>c.id===k))});
+};
+const vNum = idx => { const m = String(idx).match(/\.(\d+)$/); return m ? +m[1] : 1; };
+const tbl = (h, r, n) => table(h, r, n, {compte:false, h:260});
+function cfDetail(cf){
+  const A = cf.agents, T = new Set(cf.intension_transmise), tr = cf.terme_retenu, ev = ctlEvents(cf);
+  const ju = [...(A.juge||[])].sort((a,b)=>vNum(a.reponse?.index)-vNum(b.reponse?.index));
+  const an = (A.annotateur||[])[0]?.reponse?.attributs || [], am = (A.amendeur||[])[0]?.reponse, no = (A.nommeur||[])[0]?.reponse;
+  const sur = '<span style="text-transform:none;letter-spacing:0;font-weight:400">· surligné : transmis aux agents sur base de modalité de pertinence</span>';
+  const relance = e => `<div class="msg rel"><div class="who">Relance envoyée · ${esc(cap(e[1]))}</div><pre>${esc(e[2])}</pre></div><div class="msg rep"><div class="who">Réponse</div><pre>${esc(typeof e[3]==='string'?e[3]:JSON.stringify(e[3],null,1))}</pre></div>`;
+  const autres = ev.filter(e => e[0] !== 'relance'), rel = ev.filter(e => e[0] === 'relance');
+  return `<h2>CF ${cf.rang} ${pill(issue(cf))}</h2>`
+    + carte(`Concept formel · |X| ${cf.extension.length} · |Y| ${cf.intension.length}`,
+        `<h3>Extension X · ${cf.extension.length}</h3>${chips(cf.extension,'obj')}
+         <h3>Intension Y · ${cf.intension.length} ${sur}</h3><div class="chips">${cf.intension.map(a=>`<span class="${T.has(a)?'t':''}">${esc(a)}</span>`).join('')}</div>`, true, '--t-met')
+    + carte('Agents',
+        carte('Annotateur', (an.length ? tbl(['Attribut','Statut','Pertinence'], an.map(x=>[x.attribut,x.statut,x.pertinence])) : '<span class="empty">—</span>') + brutAgent(A, 'annotateur'), false)
+      + carte('Amendeur', am?.variantes?.length ? am.variantes.map(v=>`<div class="mut">${esc(v.justification||'')}</div>` + tbl(['Action','Cible','Valeur','Motif'], (v.operations||[]).map(o=>[o.action,o.cible,o.valeur,motif(o)]))).join('') + brutAgent(A, 'amendeur') : '<span class="empty">aucune variante</span>' + brutAgent(A, 'amendeur'), false)
+      + carte('Juge', ju.length ? tbl(['Version','Note','Justification'], ju.map(t=>[vNum(t.reponse?.index)===1?'version originale':'version amendée', fmt(t.reponse?.score), t.reponse?.justification||'']), [0,1,0]) + brutAgent(A, 'juge') : '<span class="empty">—</span>', false)
+      + carte('Nommeur', no?.noms ? tbl(['Nom proposé','Score'], no.noms.map(x=>[x.nom, fmt(x.score,1)]), [0,1]) + brutAgent(A, 'nommeur') : '<span class="empty">—</span>', false)
+      + carte('Réponse JSON brute compilée', `<pre>${esc(JSON.stringify(A, null, 1))}</pre>`, false), false, '--t-met')
+    + carte('Contrôle' + (ev.length ? ` · ${ev.length}` : ''), !ev.length ? '<span class="empty">aucune intervention</span>'
+        : (autres.length ? `<table><tbody>${autres.map(e=>`<tr><td>${esc(e[0])}</td><td>${esc(cap(e[1]))}</td><td>${esc(e[2])}</td></tr>`).join('')}</tbody></table>` : '')
+        + rel.map(relance).join(''), false, '--t-met')
+    + carte('Décision', `<table><tbody>${cf.decisions.map(e=>`<tr><td>${version(e.v)}</td><td class="n">${fmt(e.jugement)}</td><td>${pill(e.statut, e, cf.decisions.some(x => x !== e && x.v !== e.v && x.statut !== 'battu' && x.jugement != null && x.jugement === e.jugement))}</td><td>${esc(e.nom||e.noeud||'')}${(e.bloque||[]).length?` <span class="mut">noms refusés : ${esc(e.bloque.map(b=>b.nom).join(', '))}</span>`:''}</td></tr>`).join('')}</tbody></table>
+    ${tr ? `<div class="kv" style="margin-top:8px"><div>Terme retenu</div><div><b>${esc(tr.nom)}</b> · version ${tr.amende?'amendée':'originale'}</div>${(tr.corrections_retraits||[]).length?`<div>Incidences retirées</div><div>${tr.corrections_retraits.map(c=>esc(c.o+' · '+c.l)).join('<br>')}</div>`:''}${(tr.corrections_ajouts||[]).length?`<div>Incidences ajoutées</div><div>${tr.corrections_ajouts.map(c=>esc(c.o+' · '+c.l)).join('<br>')}</div>`:''}</div>` : ''}`, false, '--t-res')
+    + carte('Évaluation humaine', evaluationCF(cf), false, '--t-eva');
+}
+let TERMES = null;
+function evaluationCF(cf){
+  const tr = cf.terme_retenu;
+  if (!tr) return '<span class="empty">aucun terme retenu</span>';
+  const ext = (tr.ext || []).slice().sort().join('|');
+  const t = (TERMES || []).find(x => x.iteration === cfIt && x.extension.slice().sort().join('|') === ext)
+         || (TERMES || []).find(x => x.iteration === cfIt && x.nom === tr.nom);
+  if (!t) return '<span class="empty">aucun terme retenu</span>';
+  const jug = o => Object.entries(o).map(([a,x])=>`${a} ${x}`).join(' · ') || '—';
+  return `<div class="kv"><div>Terme évalué</div><div><b>${esc(t.nom)}</b></div><div>Score du juge final</div><div>${fmt(t.score_final)}</div>`
+    + `<div>Nommage</div><div>${verdict(t.humain.verdict_nommage)} <span class="mut">${esc(jug(t.humain.nommage))}</span></div>`
+    + `<div>Pertinence</div><div>${verdict(t.humain.verdict_pertinence)} <span class="mut">${esc(jug(t.humain.pertinence))}</span></div></div>`;
+}
+const brutAgent = (A, r) => (A[r]||[]).length ? `<details class="sec"><summary>réponse JSON brute</summary><pre>${esc(JSON.stringify(A[r].length === 1 ? A[r][0] : A[r], null, 1))}</pre></details>` : '';
+const carte = (titre, corps, ouvert = true, fam = '') => `<details class="card" ${ouvert ? 'open' : ''}${fam ? ` style="border-color:var(${fam})"` : ''}><summary>${titre}</summary><div class="in">${corps}</div></details>`;
+
+// ---------------------------------------------------------------- fil des agents
+let prAg = 'annotateur', prIt = 1;
+const coupe = p => { const i = p.search(/\n\s*Annexe/); return i < 0 ? [p, ''] : [p.slice(0, i), p.slice(i)]; };
+const jl = s => { try { return JSON.parse(s); } catch(e) { return null; } };
+const resume = (ag, j) => {
+  if (!j) return '<span class="empty">illisible</span>';
+  if (ag === 'annotateur') return esc((j.attributs||[]).map(a=>`${a.attribut} : ${a.statut}, ${a.pertinence}`).join(' · '));
+  if (ag === 'amendeur') return (j.variantes||[]).length ? esc(j.variantes.map(v=>(v.operations||[]).map(o=>`${o.action==='ajouter'?'+':'−'} ${o.cible} ${o.valeur}`).join(', ')).join(' | ')) : '<span class="empty">aucune variante</span>';
+  if (ag === 'juge') return `<b>${fmt(j.score)}</b> ${esc(j.justification||'')}`;
+  if (ag === 'nommeur') return esc((j.noms||[]).map(n=>n.nom).join(' · '));
+  return esc(JSON.stringify(j));
+};
+const entrees = (ag, L) => `<table><thead><tr><th class="n">CF</th><th>Version</th><th>Contenu</th></tr></thead><tbody>${L.map(e=>`<tr><td class="n">${e.cf}</td><td>version ${e.version}</td><td>${resume(ag, jl(e.brut))}</td></tr>`).join('')}</tbody></table>`
+  + `<details><summary>réponse JSON brute</summary><pre>${esc(L.map(e=>e.brut).join('\n'))}</pre></details>`;
+const NATURE = {lot:'CFs', reannotation:'versions amendées'};
+VIEWS.fil = async () => {
+  const AG = [['annotateur','Annotateur'],['amendeur','Amendeur'],['juge','Juge'],['nommeur','Nommeur'],['final','Juge final']];
+  $('#main').innerHTML = `<div class="bar"><select id="pa">${AG.map(([v,l])=>`<option value="${v}" ${v===prAg?'selected':''}>${l}</option>`).join('')}</select>
+    <select id="pi">${[1,2,3,4,5].map(k=>`<option value="${k}" ${k===prIt?'selected':''}>Itération ${k}</option>`).join('')}</select><span class="mut" id="pn"></span></div><div id="fv"></div>`;
+  $('#pa').onchange = e => { prAg = e.target.value; VIEWS.fil(); };
+  $('#pi').onchange = e => { prIt = +e.target.value; VIEWS.fil(); };
+  const envoi = (titre, p, doc) => { const [cons, annexe] = coupe(p);
+    return `<div class="msg env"><div class="who">${titre}</div><pre>${esc(cons.trim())}</pre>`
+      + (annexe ? `<details><summary>${esc(annexe.trim().split('\n')[0])}</summary><pre>${esc(annexe.trim())}</pre></details>` : '')
+      + (doc ? `<details><summary>Documentation des relations JDM fournie</summary><pre>${esc(doc.trim())}</pre></details>` : '') + `</div>`; };
+  if (prAg === 'final') {
+    $('#pi').style.display = 'none';
+    const J = await load('juge_final'), T = await load('termes');
+    $('#pn').textContent = 'un jugement commun sur une même échelle pour les 349 termes, après la dernière itération';
+    $('#fv').innerHTML = envoi('Envoyé au juge', J.prompt)
+      + `<div class="msg rep"><div class="who">Réponses · ${T.length}</div>${table(['Terme','Note','Justification'], T.map(t=>[t.nom, fmt(t.score_final), t.justification_score||'']), [0,1,0], {h:520})}</div>`;
+    return;
+  }
+  const F = (await load('fil_agents_' + prIt)).agents[prAg] || [];
+  $('#pn').textContent = F.length + ' appel' + (F.length>1?'s':'') + ' · ' + F.reduce((s,a)=>s+a.relances.length,0) + ' relance(s)';
+  $('#fv').innerHTML = F.map(a => {
+    const lot = `${NATURE[a.nature]} ${a.de} à ${a.a}`;
+    return envoi(`Envoyé · ${lot}`, a.prompt, a.documentation_relations)
+      + `<div class="msg rep"><div class="who">Réponse · ${a.reponse.length} entrées</div>${entrees(prAg, a.reponse)}</div>`
+      + a.relances.map((r,i) => `<div class="msg rel"><div class="who">Relance ${i+1}</div><pre>${esc(r.consigne)}</pre></div>`
+        + `<div class="msg rep"><div class="who">Réponse à la relance ${i+1} · ${r.reponse.length} entrées</div>${entrees(prAg, r.reponse)}</div>`).join('');
+  }).join('');
+};
+
+// ---------------------------------------------------------------- termes
+let tSub = 'termes', tSel = null;
+VIEWS.termes = async () => {
+  const T = await load('termes');
+  $('#main').innerHTML = `<div class="sub" id="ts"><button data-k="termes" class="${tSub==='termes'?'on':''}">Termes retenus</button><button data-k="reval" class="${tSub==='reval'?'on':''}">Recurage des termes obsolètes</button></div><div id="tv"></div>`;
+  $('#ts').querySelectorAll('button').forEach(b => b.onclick = () => { tSub = b.dataset.k; VIEWS.termes(); });
+  if (tSub === 'reval') { const R = await load('revalidation');
+    $('#tv').innerHTML = `<div class="mut" style="margin-bottom:8px">termes rendus obsolètes par des corrections ultérieures, soumis de nouveau aux agents après la 5e itération</div>`
+      + table(['Nom avant','Nom après','Note du juge au recurage','Statut','Rattaché à'], R.termes.map(t=>[esc(t.ancien), esc(t.nouveau||''), fmt(t.juge), pill(t.statut), esc(t.rattache_a||'')]), [0,0,1,0,0], {html:true, h:680}); return; }
+  const rows = T.map(t => ({k:String(t.num), texte:t.nom+' '+t.extension.join(' '), c:[t.iteration, esc(t.nom), fmt(t.score_iteration), fmt(t.score_final)]}));
+  $('#tv').insertAdjacentHTML('beforebegin', `<div class="mut" style="margin-bottom:8px">Juge (it.) : note à l'itération où le terme est retenu · Juge final : note d'un jugement commun sur une même échelle pour les 349 termes, après la dernière itération</div>`);
+  split($('#tv'), {cols:['It.','Terme','Juge (it.)','Juge final'], num:[1,0,1,1], rows, sel:tSel, onSel:k=>tSel=k, detail:k=>{ const t = T.find(x=>String(x.num)===k);
+    const jug = o => Object.entries(o).map(([a,x])=>`${a} ${x}`).join(' · ') || '—';
+    return `<h2>${esc(t.nom)}</h2><div class="kv"><div>Itération</div><div>${t.iteration}</div><div>Niveau</div><div>${t.niveau??'—'}</div><div>Score du juge, itération ${t.iteration}</div><div>${fmt(t.score_iteration)}</div><div>Score du juge final</div><div>${fmt(t.score_final)}</div></div>
+      <div class="mut" style="margin-top:6px">Appréciation du LLM de la pertinence du regroupement en langage naturel : ${esc(t.justification_score||'')}</div>
+      <hr class="sep" style="margin-top:14px"><h3>Évaluation humaine</h3><div class="kv"><div>Nommage</div><div>${jug(t.humain.nommage)}</div><div>Pertinence</div><div>${jug(t.humain.pertinence)}</div></div>
+      <h3>Extension · ${t.extension.length}</h3>${chips(t.extension,'obj')}<h3>Intension · ${(t.intension||[]).length}</h3>${chips(t.intension||[])}`; }});
+};
+const verdict = x => x === 'bon' ? '<span class="pill p-ok">bon</span>' : x === 'pas bon' ? '<span class="pill p-ko">pas bon</span>' : x === 'égalité' ? '<span class="pill p-w" title="bloc commun : autant de « bon » que de « pas bon »">égalité</span>' : '<span class="empty">—</span>';
+
+// ---------------------------------------------------------------- évaluation
+let evSel = 'tous';
+VIEWS.evaluation = async () => {
+  const ev = await load('evaluation'), T = await load('termes'), p = ev.precisions, pr = ev.protocole, pc = x => x == null ? '—' : x + ' %';
+  const cls = [s => s <= 0.70 + 1e-9, s => Math.abs(s - 0.75) < 1e-9, s => Math.abs(s - 0.80) < 1e-9, s => s >= 0.85 - 1e-9];
+  const top = new Set([...T].filter(t => t.score_final != null).sort((a,b) => b.score_final - a.score_final || a.num - b.num).slice(0,100).map(t => t.num));
+  const G = [['tous', '<b>Ensemble</b>', `<b>${pc(p.nommage)}</b>`, `<b>${pc(p.pertinence)}</b>`, () => true],
+    ...[1,2,3,4,5].map(k => ['it'+k, `Itération ${k}`, pc(p.par_iteration_nommage[k-1]), pc(p.par_iteration_pertinence[k-1]), t => t.iteration === k]),
+    ...p.classes_score.map((c,i) => ['sc'+i, `Score du juge final ${esc(c)}`, pc(p.par_score_nommage[i]), pc(p.par_score_pertinence[i]), t => t.score_final != null && cls[i](t.score_final)]),
+    ...[1,2,3].map(n => ['nv'+n, `Niveau ${n}`, pc(p.par_niveau_nommage[n-1]), pc(p.par_niveau_pertinence[n-1]), t => t.niveau === n]),
+    ['top', '100 meilleurs par score final', pc(p.cent_meilleurs.nommage), pc(p.cent_meilleurs.pertinence), t => top.has(t.num)],
+    ['bloc', 'Kappa de Fleiss, bloc commun', fmt(p.kappa.nommage), fmt(p.kappa.pertinence), t => t.humain.bloc_commun]];
+  $('#main').innerHTML = `<div style="margin-bottom:14px">${carte('Protocole',
+      `<h3>Consignes aux annotateurs</h3><div class="kv"><div>Nommage</div><div>${esc(pr.criteres.nommage)}</div><div>Pertinence</div><div>${esc(pr.criteres.pertinence)}</div></div>
+       <h3>Accord</h3><div class="kv"><div>Répartition</div><div>${esc(pr.repartition)}</div><div>Agrégation</div><div>${esc(pr.agregation)}</div></div>`, false)}</div>
+   <div class="split"><div>
+   <table><thead><tr><th>Précision</th><th class="n">Nommage</th><th class="n">Pertinence</th></tr></thead><tbody id="evg">
+     ${G.map(g => `<tr class="cl ${g[0]===evSel?'sel':''}" data-k="${g[0]}"><td>${g[1]}</td><td class="n">${g[2]}</td><td class="n">${g[3]}</td></tr>`).join('')}
+   </tbody></table><div class="mut">nom et regroupement satisfaisants : ${pc(p.deux)}</div>
+   <h3>Corrections signalées</h3><table style="max-width:520px"><thead><tr><th>Itération</th>${[1,2,3,4,5].map(k=>`<th class="n">${k}</th>`).join('')}<th class="n">Total</th></tr></thead><tbody>
+     <tr><td>Signalements</td>${p.corrections.signalements.map(x=>`<td class="n">${x}</td>`).join('')}<td class="n">${p.corrections.total}</td></tr>
+     <tr><td>Précision</td>${p.corrections.precision.map(x=>`<td class="n">${pc(x)}</td>`).join('')}<td class="n">${pc(p.corrections.precision_totale)}</td></tr></tbody></table>
+   <h3>Fichier</h3><div class="kv"><div><a href="donnees/evaluation/fiche_annotation_anonymisee.xlsx">fiche_annotation_anonymisee.xlsx</a></div><div>la liste des termes et une feuille par annotateur (A1 à A4)</div></div>
+   </div><div id="evd"></div></div>`;
+  const jug = o => Object.entries(o).map(([a,x]) => `${a} ${x}`).join(' · ');
+  const panneau = () => { const g = G.find(x => x[0] === evSel), L = T.filter(g[4]);
+    const cell = (t, c) => verdict(t.humain['verdict_' + c]) + (t.humain.bloc_commun ? `<div class="mut">${esc(jug(t.humain[c]))}</div>` : '');
+    $('#evd').innerHTML = `<h2>${g[1].replace(/<\/?b>/g,'')} · ${L.length} termes</h2>`
+      + table(['It.','Terme','Juge final','Nommage','Pertinence'], L.map(t => [t.iteration, esc(t.nom), fmt(t.score_final), cell(t,'nommage'), cell(t,'pertinence')]), [1,0,1,0,0], {html:true, h:640}); };
+  $('#evg').querySelectorAll('tr').forEach(tr => tr.onclick = () => { evSel = tr.dataset.k; $('#evg').querySelectorAll('tr').forEach(x => x.classList.toggle('sel', x === tr)); panneau(); });
+  panneau();
+};
+
+window.addEventListener('DOMContentLoaded', () => { let k = 'presentation'; try { k = localStorage.getItem('onglet') || k; } catch(e) {} if (!TABS.some(t => t[0] === k)) k = 'presentation'; show(k); });
+</script>
+<script>document.write('<script src="code/experimentation/figures.js?v=' + CHARGE + '"><\/script>');</script>
+</body>
+</html>
